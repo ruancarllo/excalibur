@@ -492,11 +492,12 @@ public class ExcaliburScaler {
     if (scalingMode == ScalingModes.Progression && !HasScaledByDefinitionOrContraction) {
       foreach (var rhinoObject in SelectedObjects) {
         var rhinoObjectGeometryCopy = rhinoObject.Geometry.Duplicate();
+        var rhinoObjectAttributesCopy = rhinoObject.Attributes.Duplicate();
 
         rhinoObjectGeometryCopy.Transform(scalingTransformation);
         rhinoObjectGeometryCopy.Transform(translationTransformation);
 
-        RhinoDocument.Objects.Add(rhinoObjectGeometryCopy);
+        RhinoDocument.Objects.Add(rhinoObjectGeometryCopy, rhinoObjectAttributesCopy);
       }
     }
 
