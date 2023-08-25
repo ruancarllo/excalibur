@@ -38,7 +38,7 @@ $$
 \begin{align*}
 T_x = I_x \times \frac{n^2 + n}{2} \pm (W  + G_x) \times n \\
 T_y = I_y \times \frac{n^2 + n}{2} \pm (H  + G_y) \times n \\
-T_z = I_z \times \frac{n^2 + n}{2} \pm (D  + G_z) \times n \\
+T_z = I_z \times \frac{n^2 + n}{2} \pm (D  + G_z) \times n
 \end{align*}
 $$
 
