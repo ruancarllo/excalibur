@@ -1,6 +1,14 @@
 # About the  Excalibur software
 
-This software is a plugin for the three-dimensional modeling program [Rhinoceros](https://www.rhino3d.com/), capable of providing a simple user interface for scaling three-dimensional objects in addition, contraction and arithmetic progression.
+This software is a plugin for the three-dimensional modeling program [Rhinoceros](https://www.rhino3d.com/), capable of providing a simple user interface for scaling three-dimensional objects in addition, contraction and arithmetic progression, following a custom theorem described below.
+
+## How to build this plugin
+
+To build this plugin in a **.rhp** file extension, install the [.NET Framework](https://dotnet.microsoft.com/) in your computer, open this project root folder with your shell, and run:
+
+```sh
+dotnet build
+```
 
 ## The Ruan Carllo's three-dimensional progressive scale conjecture
 
