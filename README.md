@@ -4,7 +4,7 @@ This software is a plugin for the three-dimensional modeling program [Rhinoceros
 
 ## The Ruan Carllo's three-dimensional progressive scale conjecture
 
-Given a 4x1 matrix that represents any $\vec{P}$ vectorial point of an object with dimensions $W_0$, $H_0$ and $D_0$ and center with coordinates $C_x$, $C_y$ and $C_z$, whose dimensions $x$, $y$ and $z$ must be increased, respectively, by $I_x$, $I_y$ and $I_z$ units, with a spacing of $G_x$, $G_y$ and $G_z$ units between each scaled object of number $n$, the resulting vectorial point $\vec{P'}$ is equal to:
+Given a 4x1 matrix that represents any $\vec{P}$ vectorial point of an object with dimensions $W_0$, $H_0$ and $D_0$ and center with coordinates $C_x$, $C_y$ and $C_z$, whose dimensions in the axes $x$, $y$ and $z$ must be increased, respectively, by $I_x$, $I_y$ and $I_z$ units, with a spacing of $G_x$, $G_y$ and $G_z$ units between each scaled object of number $n$, the resulting vectorial point $\vec{P'}$ is equal to:
 
 $$
 \vec{P'} = E \times \vec{P}
