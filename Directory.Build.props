@@ -1,0 +1,7 @@
+<Project>
+
+  <PropertyGroup>
+    <MSBuildProjectExtensionsPath>Context\obj</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+  
+</Project>

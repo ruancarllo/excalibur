@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 # Framework
 **/bin
 **/obj
 
 # Trash
 **/.DS_Store
+=======
+Context/
+>>>>>>> 8018022 (first commit)
