@@ -26,9 +26,9 @@ Where $S_x$, $S_y$ and $S_z$ represent the multiplicative scale factors of the o
 
 $$
 \begin{align*}
-S_x &= W \pm I_x \times n \\
-S_y &= H \pm I_y \times n \\
-S_z &= D \pm I_z \times n
+S_x &= \frac{W_0 \pm I_x \times n}{W_0} \\
+S_y &= \frac{H_0 \pm I_y \times n}{H_0} \\
+S_z &= \frac{D_0 \pm I_z \times n}{D_0}
 \end{align*}
 $$
 
@@ -36,9 +36,9 @@ And where $T_x$, $T_y$ and $T_z$ represent the linear translation factors for ea
 
 $$
 \begin{align*}
-T_x = I_x \times \frac{n^2 + n}{2} \pm (W  + G_x) \times n \\
-T_y = I_y \times \frac{n^2 + n}{2} \pm (H  + G_y) \times n \\
-T_z = I_z \times \frac{n^2 + n}{2} \pm (D  + G_z) \times n
+T_x = I_x \times \frac{n^2 + n}{2} \pm (W_0  + G_x) \times n \\
+T_y = I_y \times \frac{n^2 + n}{2} \pm (H_0  + G_y) \times n \\
+T_z = I_z \times \frac{n^2 + n}{2} \pm (D_0  + G_z) \times n
 \end{align*}
 $$
 
