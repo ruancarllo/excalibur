@@ -1,6 +1,6 @@
 # About the  Excalibur software
 
-This software is a plugin for the three-dimensional modeling program [Rhinoceros](https://www.rhino3d.com/), capable of providing a simple user interface for scaling three-dimensional objects in addition, contraction and arithmetic progression, following a custom theorem described below.
+This software is a plugin for the three-dimensional modeling program [Rhinoceros](https://www.rhino3d.com/), capable of providing a simple user interface for scaling three-dimensional objects in addition, contraction and arithmetic progression, following a custom conjecture described below.
 
 ## How to build this plugin
 
