@@ -35,9 +35,11 @@ $$
 And where $T_x$, $T_y$ and $T_z$ represent the linear translation factors for each of the $x$, $y$ and $z$ axes, defined as:
 
 $$
+\begin{align*}
 T_x = I_x \times \frac{n^2 + n}{2} \pm (W  + G_x) \times n \\
 T_y = I_y \times \frac{n^2 + n}{2} \pm (H  + G_y) \times n \\
 T_z = I_z \times \frac{n^2 + n}{2} \pm (D  + G_z) \times n \\
+\end{align*}
 $$
 
 So the plus or minus sign indicates whether objects are being scaled up or down.
