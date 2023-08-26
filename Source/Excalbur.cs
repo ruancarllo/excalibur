@@ -112,7 +112,7 @@ public class ExcaliburViewport : Eto.Forms.Form {
 }
 
 public class ExcaliburManager {
-  public ExcaliburScaler Scaler;
+  private ExcaliburScaler Scaler;
   private ExcaliburState State;
 
   public Eto.Forms.Button CopyXButton;
@@ -286,7 +286,7 @@ public class ExcaliburManager {
   }
 
   private void HandleUndoButtonEvent(object sender, System.EventArgs e) {
-    Scaler.DeleteSelectedObjects();
+    Scaler.DeleteAnalyzedObjects();
     State.RestoreInitialObjects();
   }
 
@@ -298,7 +298,7 @@ public class ExcaliburManager {
       if (!double.TryParse(YFactorTextBox.Text, out double heightDefinition)) heightDefinition = Scaler.SelectedObjectsActualHeight;
       if (!double.TryParse(ZFactorTextBox.Text, out double depthDefinition)) depthDefinition = Scaler.SelectedObjectsActualDepth;
 
-      Scaler.ScaleSelectedObjectsByMode(ExcaliburScaler.ScalingModes.Definition, ExcaliburScaler.ScalingDirections.None, widthDefinition, heightDefinition, depthDefinition);
+      Scaler.ScaleAnalyzedObjectsByMode(ExcaliburScaler.ScalingModes.Definition, ExcaliburScaler.ScalingDirections.None, widthDefinition, heightDefinition, depthDefinition);
     }
 
     if ((bool)ContratctionCheckBox.Checked == true) {
@@ -306,7 +306,7 @@ public class ExcaliburManager {
       if (!double.TryParse(YFactorTextBox.Text, out double heightContraction)) heightContraction = 0;
       if (!double.TryParse(ZFactorTextBox.Text, out double depthContraction)) depthContraction = 0;
 
-      Scaler.ScaleSelectedObjectsByMode(ExcaliburScaler.ScalingModes.Contraction, ExcaliburScaler.ScalingDirections.None, widthContraction, heightContraction, depthContraction);
+      Scaler.ScaleAnalyzedObjectsByMode(ExcaliburScaler.ScalingModes.Contraction, ExcaliburScaler.ScalingDirections.None, widthContraction, heightContraction, depthContraction);
     }
 
     SetActualDimensionsTextBoxes();
@@ -317,7 +317,7 @@ public class ExcaliburManager {
     if (!double.TryParse(YFactorTextBox.Text, out double heightProgression)) heightProgression = 0;
     if (!double.TryParse(ZFactorTextBox.Text, out double depthProgression)) depthProgression = 0;
 
-    Scaler.ScaleSelectedObjectsByMode(ExcaliburScaler.ScalingModes.Progression, ExcaliburScaler.ScalingDirections.Increasing, widthProgression, heightProgression, depthProgression);
+    Scaler.ScaleAnalyzedObjectsByMode(ExcaliburScaler.ScalingModes.Progression, ExcaliburScaler.ScalingDirections.Increasing, widthProgression, heightProgression, depthProgression);
   }
 
   private void HandleSubscaleButtonEvent(object sender, System.EventArgs e) {
@@ -325,7 +325,7 @@ public class ExcaliburManager {
     if (!double.TryParse(YFactorTextBox.Text, out double heightProgression)) heightProgression = 0;
     if (!double.TryParse(ZFactorTextBox.Text, out double depthProgression)) depthProgression = 0;
 
-    Scaler.ScaleSelectedObjectsByMode(ExcaliburScaler.ScalingModes.Progression, ExcaliburScaler.ScalingDirections.Decreasing, widthProgression, heightProgression, depthProgression);
+    Scaler.ScaleAnalyzedObjectsByMode(ExcaliburScaler.ScalingModes.Progression, ExcaliburScaler.ScalingDirections.Decreasing, widthProgression, heightProgression, depthProgression);
   }
 
   private void SetActualDimensionsTextBoxes() {
@@ -336,16 +336,16 @@ public class ExcaliburManager {
   
   private void SetInitialStateIfUnset() {
     if (!State.AreObjectsSet) {
-      State.SetInitialObjects(Scaler.SelectedObjects);
+      State.SetInitialObjects(Scaler.AnalyzedObjects);
     }
   }
 }
 
 public class ExcaliburScaler {
   public readonly Rhino.RhinoDoc RhinoDocument;
-  public readonly Rhino.DocObjects.RhinoObject[] SelectedObjects;
+  public readonly Rhino.DocObjects.RhinoObject[] AnalyzedObjects;
 
-  public bool AreThereSelectedObjects => SelectedObjects.Length > 0;
+  public bool AreThereAnalyzedObjects => AnalyzedObjects.Length > 0;
 
   public double SelectedObjectsActualWidth;
   public double SelectedObjectsActualHeight;
@@ -379,17 +379,51 @@ public class ExcaliburScaler {
   public ExcaliburScaler(Rhino.RhinoDoc rhinoDocument) {
     RhinoDocument = rhinoDocument;
 
-    var objects = RhinoDocument.Objects.GetSelectedObjects(false, false);
-    var objectsList = new System.Collections.Generic.List<Rhino.DocObjects.RhinoObject>(objects);
-    var objestsArray = objectsList.ToArray();
+    var selectedObjects = RhinoDocument.Objects.GetSelectedObjects(false, false);
+    var selectedObjectsList = new System.Collections.Generic.List<Rhino.DocObjects.RhinoObject>(selectedObjects);
 
-    SelectedObjects = objestsArray;
+    var selectedObjectsGuidsList = new System.Collections.Generic.List<System.Guid>();
+    var colateralObjectsGuidsList = new System.Collections.Generic.List<System.Guid>();
+
+    foreach (var selectedObject in selectedObjectsList) {
+      selectedObjectsGuidsList.Add(selectedObject.Id);
+    }
+
+    foreach (var selectedObject in selectedObjectsList) {
+      var selectedObjectGroupIndexList = selectedObject.GetGroupList();
+
+      if (selectedObjectGroupIndexList != null) {
+        foreach (var selectedObjectGroupIndex in selectedObjectGroupIndexList) {
+          var selectedObjectGroupObjects = RhinoDocument.Objects.FindByGroup(selectedObjectGroupIndex);
+
+          foreach (var selectedObjectGroupObject in selectedObjectGroupObjects) {
+            if (!selectedObjectsGuidsList.Contains(selectedObjectGroupObject.Id)) {
+              colateralObjectsGuidsList.Add(selectedObjectGroupObject.Id);
+            }
+          }
+        }
+      }
+    }
+
+    var analyzedObjectsList = new System.Collections.Generic.List<Rhino.DocObjects.RhinoObject>();
+
+    foreach (var selectedObjectGuid in selectedObjectsGuidsList) {
+      var selectedObject = RhinoDocument.Objects.Find(selectedObjectGuid);
+      analyzedObjectsList.Add(selectedObject);
+    }
+
+    foreach (var colateralObjectGuid in colateralObjectsGuidsList) {
+      var colateralObject = RhinoDocument.Objects.Find(colateralObjectGuid);
+      analyzedObjectsList.Add(colateralObject);
+    }
+
+    AnalyzedObjects = analyzedObjectsList.ToArray();
 
     var selectedObjectsCombinedBoundingBoxes = Rhino.Geometry.BoundingBox.Empty;
 
-    foreach (var rhinoObject in SelectedObjects) {
-      var rhinoObjectBoungingBox = rhinoObject.Geometry.GetBoundingBox(true);
-      selectedObjectsCombinedBoundingBoxes.Union(rhinoObjectBoungingBox);
+    foreach (var selectedObject in selectedObjectsList) {
+      var selectedObjectBoungingBox = selectedObject.Geometry.GetBoundingBox(true);
+      selectedObjectsCombinedBoundingBoxes.Union(selectedObjectBoungingBox);
     }
 
     SelectedObjectsActualWidth = selectedObjectsCombinedBoundingBoxes.Max.X - selectedObjectsCombinedBoundingBoxes.Min.X;
@@ -413,7 +447,7 @@ public class ExcaliburScaler {
     JustScaled = false;
   }
 
-  public void ScaleSelectedObjectsByMode(ScalingModes scalingMode, ScalingDirections scalingDirection, double xRawFactor, double yRawFactor, double zRawFactor) {
+  public void ScaleAnalyzedObjectsByMode(ScalingModes scalingMode, ScalingDirections scalingDirection, double xRawFactor, double yRawFactor, double zRawFactor) {
     JustScaled = true;
    
     if (!HasProgressionFactorsBeenSet) {
@@ -477,7 +511,7 @@ public class ExcaliburScaler {
     if (zScaleFactor <= 0) return;
 
     if (scalingMode == ScalingModes.Definition || scalingMode == ScalingModes.Contraction) {
-      foreach (var rhinoObject in SelectedObjects) {
+      foreach (var rhinoObject in AnalyzedObjects) {
         rhinoObject.Geometry.Transform(scalingTransformation);
         rhinoObject.CommitChanges();
       }
@@ -490,7 +524,7 @@ public class ExcaliburScaler {
     }
 
     if (scalingMode == ScalingModes.Progression && !HasScaledByDefinitionOrContraction) {
-      foreach (var rhinoObject in SelectedObjects) {
+      foreach (var rhinoObject in AnalyzedObjects) {
         var rhinoObjectGeometryCopy = rhinoObject.Geometry.Duplicate();
         var rhinoObjectAttributesCopy = rhinoObject.Attributes.Duplicate();
 
@@ -504,9 +538,9 @@ public class ExcaliburScaler {
     RhinoDocument.Views.Redraw();
   }
 
-  public void DeleteSelectedObjects() {
-    foreach (var selectedObject in SelectedObjects) {
-      RhinoDocument.Objects.Delete(selectedObject);
+  public void DeleteAnalyzedObjects() {
+    foreach (var analyzedObject in AnalyzedObjects) {
+      RhinoDocument.Objects.Delete(analyzedObject);
     }
 
     RhinoDocument.Views.Redraw();
@@ -520,7 +554,7 @@ public class ExcaliburScaler {
 public class ExcaliburState {
   private readonly Rhino.RhinoDoc RhinoDocument;
 
-  private int ObjectsLength;
+  private int InitialObjectsLength;
 
   private Rhino.Geometry.GeometryBase[] InitialObjectsGeometries;
   private Rhino.DocObjects.ObjectAttributes[] InitialObjectsAttributes;
@@ -531,15 +565,15 @@ public class ExcaliburState {
     RhinoDocument = rhinoDocument;
   }
 
-  public void SetInitialObjects(Rhino.DocObjects.RhinoObject[] rhinoObjects) {
-    ObjectsLength = rhinoObjects.Length;
+  public void SetInitialObjects(Rhino.DocObjects.RhinoObject[] analyzedObjects) {
+    InitialObjectsLength = analyzedObjects.Length;
 
-    InitialObjectsGeometries = new Rhino.Geometry.GeometryBase[ObjectsLength];
-    InitialObjectsAttributes = new Rhino.DocObjects.ObjectAttributes[ObjectsLength];
+    InitialObjectsGeometries = new Rhino.Geometry.GeometryBase[InitialObjectsLength];
+    InitialObjectsAttributes = new Rhino.DocObjects.ObjectAttributes[InitialObjectsLength];
 
-    foreach(var rhinoObject in rhinoObjects) {
-      var initialObjectGeometry = rhinoObject.Geometry.Duplicate();
-      var initialObjectAttributes = rhinoObject.Attributes.Duplicate();
+    foreach(var analyzedObject in analyzedObjects) {
+      var initialObjectGeometry = analyzedObject.Geometry.Duplicate();
+      var initialObjectAttributes = analyzedObject.Attributes.Duplicate();
 
       InitialObjectsGeometries[^1] = initialObjectGeometry;
       InitialObjectsAttributes[^1] = initialObjectAttributes;
@@ -549,7 +583,7 @@ public class ExcaliburState {
   }
 
   public void RestoreInitialObjects() {
-    for (int i = 0; i < ObjectsLength; i++) {
+    for (int i = 0; i < InitialObjectsLength; i++) {
       RhinoDocument.Objects.Add(InitialObjectsGeometries[i], InitialObjectsAttributes[i]);
     }
 
