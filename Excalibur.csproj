@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <PackageReference Include="Eto.Forms" Version="2.7.5"/>
-    <Reference Include="Libraries/RhinoCommon.dll"/>
+    <PackageReference Include="RhinoCommon" Version="5.0"/>
   </ItemGroup>
 
 </Project>
