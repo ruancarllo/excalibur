@@ -17,12 +17,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Source\Resources\**\*"/>
+    <EmbeddedResource Include="Source\Resources\**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Libraries/RhinoCommon.dll" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Eto.Forms" Version="2.7.5"/>
-    <Reference Include="Libraries/RhinoCommon.dll"/>
   </ItemGroup>
 
 </Project>
