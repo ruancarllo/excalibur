@@ -1,7 +1,3 @@
-using System;
-using Rhino;
-using Eto;
-
 namespace Excalibur {
   public class ExcaliburPlugin : Rhino.PlugIns.PlugIn {
     public ExcaliburPlugin() {
