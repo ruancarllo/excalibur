@@ -8,7 +8,7 @@
   <PropertyGroup>
     <Version>1.0</Version>
     <TargetExt>.rhp</TargetExt>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <PackageReference Include="Eto.Forms" Version="2.7.5"/>
-    <PackageReference Include="RhinoCommon" Version="7.32.23221.10241" NoWarn="NU1701"/>
+    <Reference Include="Libraries\RhinoCommon.dll"/>
   </ItemGroup>
 
 </Project>

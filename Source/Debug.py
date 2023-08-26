@@ -3,7 +3,7 @@ import signal
 import shutil
 import subprocess
 
-EXCALIBUR_ASSEMBLY_PATH = './Context/bin/net7.0/Excalibur.rhp'
+EXCALIBUR_ASSEMBLY_PATH = './Context/bin/net48/Excalibur.rhp'
 
 RHINOCEROS_PLUGIN_DIRECTORY = "/Applications/Rhino 7.app/Contents/PlugIns"
 RHINOCEROS_EXECUTABLE_PATH = "/Applications/Rhino 7.app/Contents/MacOS/Rhinoceros"
