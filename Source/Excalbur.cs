@@ -1,13 +1,17 @@
+using System;
+using Rhino;
+
+using System.Windows.Forms;
+
+[assembly: System.Runtime.InteropServices.Guid("8f544372-c3fd-46ee-801b-f6b426b6c0a1")]
+
 namespace Excalibur {
   public class ExcaliburPlugin : Rhino.PlugIns.PlugIn {
     public ExcaliburPlugin() {
       Instance = this;
     }
 
-    public static ExcaliburPlugin Instance {
-      get;
-      private set;
-    }
+    public static ExcaliburPlugin Instance { get; private set; }
   }
 
   public class ExcaliburCommand : Rhino.Commands.Command {
@@ -15,124 +19,121 @@ namespace Excalibur {
       Instance = this;
     }
     
-    public static ExcaliburCommand Instance {
-      get;
-      private set;
-    }
+    public static ExcaliburCommand Instance { get; private set; }
 
-    public override string EnglishName => "Excalibur";
+    public override System.String EnglishName => "Excalibur";
 
     protected override Rhino.Commands.Result RunCommand(Rhino.RhinoDoc rhinoDocument, Rhino.Commands.RunMode mode) {
       var excaliburScaler = new ExcaliburScaler(rhinoDocument);
       var excaliburManager = new ExcaliburManager(excaliburScaler);
       var excaliburViewport = new ExcaliburViewport(excaliburManager);
 
+      Rhino.RhinoApp.WriteLine("Hello");
       excaliburViewport.Show();
 
       return Rhino.Commands.Result.Success;
     }
   }
 
-  public class ExcaliburViewport : Eto.Forms.Form {
+  public class ExcaliburViewport : Form {
     private readonly ExcaliburManager Manager;
-    private readonly Eto.Forms.DynamicLayout Layout;
+    private readonly TableLayoutPanel FormLayout;
 
     public ExcaliburViewport(ExcaliburManager excaliburManager) {
       Manager = excaliburManager;
-      Layout = CreateLayout();
+      FormLayout = CreateLayout();
 
-      Title = "Excalibur";
-      Padding = 10;
-      Resizable = false;
-      Topmost = true;
+      Text = "Excalibur";
+      Padding = new Padding(10);
+      FormBorderStyle = FormBorderStyle.FixedDialog;
+      TopMost = true;
 
-      Content = Layout;
+      Controls.Add(FormLayout);
 
       Shown += Manager.StartListeningEvents;
-      Closed += Manager.StopListeningEvents;
+      FormClosed += Manager.StopListeningEvents;
     }
 
-    private Eto.Forms.DynamicLayout CreateLayout() {
-      var formLayout = new Eto.Forms.DynamicLayout();
-
-      var axisControls = new Eto.Forms.DynamicLayout() {
-        Spacing = FormSpacing
+    private TableLayoutPanel CreateLayout() {
+      var formLayout = new TableLayoutPanel {
+          Dock = DockStyle.Fill,
+          ColumnCount = 1,
+          RowCount = 2,
+          Padding = new Padding(5),
+          AutoSize = true
       };
 
-      var footerControls = new Eto.Forms.DynamicLayout() {
-        Spacing = FormSpacing
+      var axisControls = new TableLayoutPanel {
+          Dock = DockStyle.Fill,
+          ColumnCount = 4,
+          RowCount = 3,
+          Padding = new Padding(0),
+          AutoSize = true
       };
 
-      formLayout.BeginVertical(spacing: FormSpacing);
-      
-      axisControls.BeginHorizontal();
-      axisControls.Add(Manager.CopyXButton);
-      axisControls.Add(Manager.ActualWidthTextBox, true);
-      axisControls.Add(Manager.XScaleLabel);
-      axisControls.Add(Manager.XFactorTextBox);
-      axisControls.EndHorizontal();
+      var footerControls = new TableLayoutPanel {
+          Dock = DockStyle.Fill,
+          ColumnCount = 5,
+          RowCount = 1,
+          Padding = new Padding(0),
+          AutoSize = true
+      };
 
-      axisControls.BeginHorizontal();
-      axisControls.Add(Manager.CopyYButton);
-      axisControls.Add(Manager.ActualHeightTextBox, true);
-      axisControls.Add(Manager.YScaleLabel);
-      axisControls.Add(Manager.YFactorTextBox);
-      axisControls.EndHorizontal();
+      formLayout.Controls.Add(axisControls, 0, 0);
+      formLayout.Controls.Add(footerControls, 0, 1);
 
-      axisControls.BeginHorizontal();
-      axisControls.Add(Manager.CopyZButton);
-      axisControls.Add(Manager.ActualDepthTextBox, true);
-      axisControls.Add(Manager.ZScaleLabel);
-      axisControls.Add(Manager.ZFactorTextBox);
-      axisControls.EndHorizontal();
+      axisControls.Controls.Add(Manager.CopyXButton, 0, 0);
+      axisControls.Controls.Add(Manager.ActualWidthTextBox, 1, 0);
+      axisControls.Controls.Add(Manager.XScaleLabel, 2, 0);
+      axisControls.Controls.Add(Manager.XFactorTextBox, 3, 0);
 
-      formLayout.Add(axisControls);
+      axisControls.Controls.Add(Manager.CopyYButton, 0, 1);
+      axisControls.Controls.Add(Manager.ActualHeightTextBox, 1, 1);
+      axisControls.Controls.Add(Manager.YScaleLabel, 2, 1);
+      axisControls.Controls.Add(Manager.YFactorTextBox, 3, 1);
 
-      footerControls.BeginHorizontal();
-      footerControls.Add(Manager.ContratctionCheckBox, true);
-      footerControls.Add(Manager.UndoButton);
-      footerControls.Add(Manager.ApplyButton);
-      footerControls.Add(Manager.SubscaleButton);
-      footerControls.Add(Manager.SuperscaleButton);
-      footerControls.EndHorizontal();
+      axisControls.Controls.Add(Manager.CopyZButton, 0, 2);
+      axisControls.Controls.Add(Manager.ActualDepthTextBox, 1, 2);
+      axisControls.Controls.Add(Manager.ZScaleLabel, 2, 2);
+      axisControls.Controls.Add(Manager.ZFactorTextBox, 3, 2);
 
-      formLayout.Add(footerControls);
-
-      formLayout.EndVertical();
+      footerControls.Controls.Add(Manager.ContratctionCheckBox, 0, 0);
+      footerControls.Controls.Add(Manager.UndoButton, 1, 0);
+      footerControls.Controls.Add(Manager.ApplyButton, 2, 0);
+      footerControls.Controls.Add(Manager.SubscaleButton, 3, 0);
+      footerControls.Controls.Add(Manager.SuperscaleButton, 4, 0);
 
       return formLayout;
     }
-
-    private static readonly Eto.Drawing.Size FormSpacing = new Eto.Drawing.Size(5, 5);
   }
 
   public class ExcaliburManager {
     private ExcaliburScaler Scaler;
     private ExcaliburState State;
 
-    public Eto.Forms.Button CopyXButton;
-    public Eto.Forms.Button CopyYButton;
-    public Eto.Forms.Button CopyZButton;
+    public Button CopyXButton;
+    public Button CopyYButton;
+    public Button CopyZButton;
 
-    public Eto.Forms.TextBox ActualWidthTextBox;
-    public Eto.Forms.TextBox ActualHeightTextBox;
-    public Eto.Forms.TextBox ActualDepthTextBox;
+    public TextBox ActualWidthTextBox;
+    public TextBox ActualHeightTextBox;
+    public TextBox ActualDepthTextBox;
 
-    public Eto.Forms.Label XScaleLabel;
-    public Eto.Forms.Label YScaleLabel;
-    public Eto.Forms.Label ZScaleLabel;
+    public Label XScaleLabel;
+    public Label YScaleLabel;
+    public Label ZScaleLabel;
 
-    public Eto.Forms.TextBox XFactorTextBox;
-    public Eto.Forms.TextBox YFactorTextBox;
-    public Eto.Forms.TextBox ZFactorTextBox;
+    public TextBox XFactorTextBox;
+    public TextBox YFactorTextBox;
+    public TextBox ZFactorTextBox;
 
-    public Eto.Forms.CheckBox ContratctionCheckBox;
+    public CheckBox ContratctionCheckBox;
 
-    public Eto.Forms.Button UndoButton;
-    public Eto.Forms.Button ApplyButton;
+    public Button UndoButton;
+    public Button ApplyButton;
 
-    public Eto.Forms.Button SubscaleButton;
-    public Eto.Forms.Button SuperscaleButton;
+    public Button SubscaleButton;
+    public Button SuperscaleButton;
 
     public ExcaliburManager(ExcaliburScaler excaliburScaler) {
       Scaler = excaliburScaler;
@@ -168,68 +169,65 @@ namespace Excalibur {
       SuperscaleButton = CreateSuperscaleButton();
     }
 
-    private static Eto.Forms.Button CreateCopyButton() {
-      return new Eto.Forms.Button() {
-        Width = 15,
-        BackgroundColor = Eto.Drawing.Color.FromArgb(32, 128, 64)
+    private static Button CreateCopyButton() {
+      return new Button() {
+              Width = 15,
+              BackColor = System.Drawing.Color.FromArgb(32, 128, 64)
+          };
+      }
+
+  private static TextBox CreateActualDimensionsTextBox() {
+      return new TextBox() {
+          ReadOnly = true
       };
-    }
+  }
 
-    private static Eto.Forms.TextBox CreateActualDimensionsTextBox() {
-      return new Eto.Forms.TextBox() {
-        ReadOnly = true,
-        PlaceholderText = "0.0"
+  private static Label CreateScaleLabel(string axisName) {
+      return new Label() {
+          Text = $"Escala de {axisName}"
       };
-    }
+  }
 
-    private static Eto.Forms.Label CreateScaleLabel(string axisName) {
-      return new Eto.Forms.Label() {
-        Text = $"Escala de {axisName}",
-        TextAlignment = Eto.Forms.TextAlignment.Center
+  private static TextBox CreateDimensionFactorTextBox() {
+      return new TextBox() {
       };
-    }
+  }
 
-    private static Eto.Forms.TextBox CreateDimensionFactorTextBox() {
-      return new Eto.Forms.TextBox() {
-        PlaceholderText = "0.0",
+  private static CheckBox CreateContratctionCheckBox() {
+      return new CheckBox() {
+          Text = "Contração (%)"
       };
-    }
+  }
 
-    private static Eto.Forms.CheckBox CreateContratctionCheckBox() {
-      return new Eto.Forms.CheckBox() {
-        Text = "Contração (%)"
-      }; 
-    }
-
-    private static Eto.Forms.Button CreateUndoButton() {
-      return new Eto.Forms.Button() {
-        MinimumSize = new Eto.Drawing.Size(-1, -1),
-        Text = "Desfazer"
+  private static Button CreateUndoButton() {
+      return new Button() {
+          MinimumSize = new System.Drawing.Size(-1, -1),
+          Text = "Desfazer"
       };
-    }
+  }
 
-    private static Eto.Forms.Button CreateApplyButton() {
-      return new Eto.Forms.Button() {
-        MinimumSize = new Eto.Drawing.Size(-1, -1),
-        Text = "Aplicar"
+  private static Button CreateApplyButton() {
+      return new Button() {
+          MinimumSize = new System.Drawing.Size(-1, -1),
+          Text = "Aplicar"
       };
-    }
+  }
 
-    private static Eto.Forms.Button CreateSubscaleButton() {
-      return new Eto.Forms.Button {
-        MinimumSize = new Eto.Drawing.Size(-1, -1),
-        Text = "-"
+  private static Button CreateSubscaleButton() {
+      return new Button {
+          MinimumSize = new System.Drawing.Size(-1, -1),
+          Text = "-"
       };
-    }
+  }
 
-    private static Eto.Forms.Button CreateSuperscaleButton() {
-      return new Eto.Forms.Button {
-        MinimumSize = new Eto.Drawing.Size(-1, -1),
-        Text = "+"
+  private static Button CreateSuperscaleButton() {
+      return new Button {
+          MinimumSize = new System.Drawing.Size(-1, -1),
+          Text = "+"
       };
-    }
+  }
 
-    public void StartListeningEvents(object sender, System.EventArgs e) {
+  public void StartListeningEvents(object sender, EventArgs e) {
       CopyXButton.Click += HandleCopyXButtonEvent;
       CopyYButton.Click += HandleCopyYButtonEvent;
       CopyZButton.Click += HandleCopyZButtonEvent;
@@ -241,9 +239,10 @@ namespace Excalibur {
       SubscaleButton.Click += HandleSubscaleButtonEvent;
 
       Rhino.RhinoDoc.SelectObjects += HandleSelectionEvent;
-    }
+  }
 
-    public void StopListeningEvents(object sender, System.EventArgs e) {
+  
+  public void StopListeningEvents(object sender, EventArgs e) {
       CopyXButton.Click -= HandleCopyXButtonEvent;
       CopyYButton.Click -= HandleCopyYButtonEvent;
       CopyZButton.Click -= HandleCopyZButtonEvent;
@@ -255,7 +254,7 @@ namespace Excalibur {
       SubscaleButton.Click -= HandleSubscaleButtonEvent;
 
       Rhino.RhinoDoc.SelectObjects -= HandleSelectionEvent;
-    } 
+  }
     
     private void HandleSelectionEvent(object sender, Rhino.DocObjects.RhinoObjectSelectionEventArgs e) {
       if (Scaler.HasJustCommitedChanges) {
@@ -448,6 +447,10 @@ namespace Excalibur {
       SelectedObjectsActualHeight = selectedObjectsCombinedBoundingBoxes.Max.Y - selectedObjectsCombinedBoundingBoxes.Min.Y;
       SelectedObjectsActualDepth = selectedObjectsCombinedBoundingBoxes.Max.Z - selectedObjectsCombinedBoundingBoxes.Min.Z;
 
+      if (SelectedObjectsActualWidth < 0) SelectedObjectsActualWidth = 0;
+      if (SelectedObjectsActualHeight < 0) SelectedObjectsActualHeight = 0;
+      if (SelectedObjectsActualDepth < 0) SelectedObjectsActualDepth = 0;
+
       SelectedObjectsInitialWidth = SelectedObjectsActualWidth;
       SelectedObjectsInitialHeight = SelectedObjectsActualHeight;
       SelectedObjectsInitialDepth = SelectedObjectsActualDepth;
@@ -462,6 +465,10 @@ namespace Excalibur {
       AnalyzedObjectsInitialWidth = analyzedObjectsCombinedBoundingBoxes.Max.X - analyzedObjectsCombinedBoundingBoxes.Min.X;
       AnalyzedObjectsInitialHeight = analyzedObjectsCombinedBoundingBoxes.Max.Y - analyzedObjectsCombinedBoundingBoxes.Min.Y;
       AnalyzedObjectsInitialDepth = analyzedObjectsCombinedBoundingBoxes.Max.Z - analyzedObjectsCombinedBoundingBoxes.Min.Z;
+
+      if (AnalyzedObjectsInitialWidth < 0) AnalyzedObjectsInitialWidth = 0;
+      if (AnalyzedObjectsInitialHeight < 0) AnalyzedObjectsInitialHeight = 0;
+      if (AnalyzedObjectsInitialDepth < 0) AnalyzedObjectsInitialDepth = 0;
 
       AnalyzedObjectsInitialXCenter = analyzedObjectsCombinedBoundingBoxes.Center.X;
       AnalyzedObjectsInitialYCenter = analyzedObjectsCombinedBoundingBoxes.Center.Y;
