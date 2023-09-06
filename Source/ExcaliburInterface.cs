@@ -120,6 +120,7 @@ namespace ExcaliburUI {
 
       ReadOnly = true;
 
+      BackColor = base.BackColor;
       ForeColor = System.Drawing.Color.FromArgb(0, 0, 255);
     }
   }
