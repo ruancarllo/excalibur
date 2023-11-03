@@ -16,14 +16,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="C:\Program Files\Rhinoceros 5 (64-bit)\System\RhinoCommon.dll"/>
+    <Reference Include="C:\Program Files\Rhino 7\System\RhinoCommon.dll"/>
   </ItemGroup>
 
   <Target Name="InstallPlugin" AfterTargets="Publish">
     <ItemGroup>
       <PublishFiles Include="$(PublishDir)\*.rhp"/>
     </ItemGroup>
-    <Copy SourceFiles="@(PublishFiles)" DestinationFolder="$(UserProfile)\AppData\Roaming\McNeel\Rhinoceros\5.0\Plug-ins\Excalibur (8f544372-c3fd-46ee-801b-f6b426b6c0a1)\1.0.0.0"/>
+    <Copy SourceFiles="@(PublishFiles)" DestinationFolder="$(UserProfile)\AppData\Roaming\McNeel\Rhinoceros\7.0\Plug-ins\Excalibur (8f544372-c3fd-46ee-801b-f6b426b6c0a1)\1.0.0.0"/>
   </Target>
 
 </Project>
