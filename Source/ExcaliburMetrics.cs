@@ -122,7 +122,7 @@ namespace ExcaliburMetrics {
       HasJustCommitedChanges = true;
     }
 
-    public void DilateAnalyzedObjectsByMode( ScalingModes scalingMode, ScalingDirections scalingDirection, double xRawFactor, double yRawFactor, double zRawFactor) {
+    public void DilateAnalyzedObjectsByMode(ScalingModes scalingMode, ScalingDirections scalingDirection, double xRawFactor, double yRawFactor, double zRawFactor) {
       if (!HasProgressionFactorsBeenSet) {
         ProgressionInitialXFactor = xRawFactor;
         ProgressionInitialYFactor = yRawFactor;
@@ -143,8 +143,6 @@ namespace ExcaliburMetrics {
       int progressionIndex = 0;
       int scalingTernary = (int)scalingDirection;
 
-      string progressionDirection = "";
-
       var scalingTransformation = Rhino.Geometry.Transform.Identity;
       var translationTransformation = Rhino.Geometry.Transform.Identity;
 
@@ -163,12 +161,10 @@ namespace ExcaliburMetrics {
       if (scalingMode == ScalingModes.Progression) {
         if (scalingDirection == ScalingDirections.Increasing) {
           progressionIndex = ++ProgressionIncreasingIndex;
-          progressionDirection = "Increasing";
         }
 
         if (scalingDirection == ScalingDirections.Decreasing) {
           progressionIndex = ++ProgressionDecreasingIndex;
-          progressionDirection = "Decreasing";
         }
 
         double selectedObjectsNewWidth = SelectedObjectsInitialWidth + ProgressionInitialXFactor * progressionIndex * scalingTernary;
@@ -211,42 +207,26 @@ namespace ExcaliburMetrics {
       }
 
       if (scalingMode == ScalingModes.Progression) {
+        var dilatedObjectsIds = new System.Collections.Generic.List<System.Guid>();
+
         foreach (var analyzedObject in AnalyzedObjects) {
-          var analyzedObjectGeometryCopy = analyzedObject.Geometry.Duplicate();
-          var analyzedObjectAttributesCopy = analyzedObject.Attributes.Duplicate();
+          if (!dilatedObjectsIds.Contains(analyzedObject.Id)) {
+            var analyzedObjectGeometryCopy = analyzedObject.Geometry.Duplicate();
+            var analyzedObjectAttributesCopy = analyzedObject.Attributes.Duplicate();
 
-          var analyzedObjectNewLayerCount = RhinoDocument.Layers.Count + 1;
+            analyzedObjectAttributesCopy.RemoveFromAllGroups();
 
-          var analyzedObjectNewLayer = new Rhino.DocObjects.Layer {
-            Name = $"Excalibur ${progressionDirection} Layer {analyzedObjectNewLayerCount.ToString()}-{progressionIndex.ToString()}",
-            Color = GenerateRandomColor(),
-            IsVisible = true,
-            IsLocked = false
-          };
+            analyzedObjectGeometryCopy.Transform(scalingTransformation);
+            analyzedObjectGeometryCopy.Transform(translationTransformation);
 
-          // var analyzedObjectNewLayerIndex = RhinoDocument.Layers.Add(analyzedObjectNewLayer);
-          // analyzedObjectAttributesCopy.LayerIndex = analyzedObjectNewLayerIndex;
+            RhinoDocument.Objects.Add(analyzedObjectGeometryCopy, analyzedObjectAttributesCopy);
 
-          analyzedObjectAttributesCopy.RemoveFromAllGroups();
-
-          analyzedObjectGeometryCopy.Transform(scalingTransformation);
-          analyzedObjectGeometryCopy.Transform(translationTransformation);
-
-          RhinoDocument.Objects.Add(analyzedObjectGeometryCopy, analyzedObjectAttributesCopy);
+            dilatedObjectsIds.Add(analyzedObject.Id);
+          }          
         }
       }
 
       RhinoDocument.Views.Redraw();
-    }
-
-    private System.Drawing.Color GenerateRandomColor() {
-      var random = new System.Random();
-
-      var red = random.Next(256);
-      var green = random.Next(256);
-      var blue = random.Next(256);
-
-      return System.Drawing.Color.FromArgb(red, green, blue);
     }
 
     public ExcaliburDilator Reinstantiate() {
