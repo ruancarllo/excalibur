@@ -1,2 +1,6 @@
-bin/
-obj/
+# Framework
+**/bin
+**/obj
+
+# Trash
+**/.DS_Store
