@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Title>Excalibur</Title>
+    <Description>Description for Excalibur</Description>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Version>1.0</Version>
+    <TargetExt>.rhp</TargetExt>
+    <TargetFramework>net48</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <OutputPath>Context\bin\</OutputPath>
+    <IntermediateOutputPath>Context\obj\</IntermediateOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Source\Resources\**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Libraries/RhinoCommon.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Eto.Forms" Version="2.7.5"/>
+  </ItemGroup>
+
+</Project>
