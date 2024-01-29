@@ -1,10 +1,14 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 7ea75f9 (Restored main files state)
 # Framework
 **/bin
 **/obj
 
 # Trash
+<<<<<<< HEAD
 **/.DS_Store
 =======
 Context/
@@ -12,3 +16,6 @@ Context/
 =======
 Context/obj
 >>>>>>> 72bdc50 (Updated project SDK and libraries)
+=======
+**/.DS_Store
+>>>>>>> 7ea75f9 (Restored main files state)
