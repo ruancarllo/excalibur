@@ -234,7 +234,14 @@ namespace ExcaliburAdministration {
 
       System.Collections.Generic.List<System.Double> spreadingValues = new System.Collections.Generic.List<System.Double>();
 
-      System.String[] spreadingValueLines = MainWindow.HighWritableTextBoxForValues.Text.Trim().Split(
+      System.String HighWritableTextBoxColumnsCombinedText = System.String.Concat(
+        MainWindow.HighWritableTextBoxForValuesColumn1.Text.Trim() + System.Environment.NewLine,
+        MainWindow.HighWritableTextBoxForValuesColumn2.Text.Trim() + System.Environment.NewLine,
+        MainWindow.HighWritableTextBoxForValuesColumn3.Text.Trim() + System.Environment.NewLine,
+        MainWindow.HighWritableTextBoxForValuesColumn4.Text.Trim()
+      );
+
+      System.String[] spreadingValueLines = HighWritableTextBoxColumnsCombinedText.Trim().Split(
         new System.String[] { System.Environment.NewLine },
         System.StringSplitOptions.None
       );

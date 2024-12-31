@@ -1,3 +1,7 @@
+using System;
+using System.Linq;
+using System.Windows.Forms;
+
 namespace ExcaliburComponents {
   public class MainWindow: System.Windows.Forms.Form {
     public MainWindow() {
@@ -44,9 +48,17 @@ namespace ExcaliburComponents {
       Controls.Add(MediumLabelForReference);
       Controls.Add(SmallWritableTextBoxForReference);
 
-      Controls.Add(HighWritableTextBoxForValues);
+      Controls.Add(HighWritableTextBoxForValuesColumn1);
+      Controls.Add(HighWritableTextBoxForValuesColumn2);
+      Controls.Add(HighWritableTextBoxForValuesColumn3);
+      Controls.Add(HighWritableTextBoxForValuesColumn4);
 
       Controls.Add(LargeButtonForSpread);
+
+      HighWritableTextBoxForValuesColumn1.KeyDown += HandleEnterKeyNavigation;
+      HighWritableTextBoxForValuesColumn2.KeyDown += HandleEnterKeyNavigation;
+      HighWritableTextBoxForValuesColumn3.KeyDown += HandleEnterKeyNavigation;
+      HighWritableTextBoxForValuesColumn4.KeyDown += HandleEnterKeyNavigation;
     }
 
     public readonly ExcaliburComponents.ColorButton ColorButtonForX = new ExcaliburComponents.ColorButton {
@@ -135,17 +147,63 @@ namespace ExcaliburComponents {
     };
 
     public readonly ExcaliburComponents.SmallWritableTextBox SmallWritableTextBoxForReference = new ExcaliburComponents.SmallWritableTextBox {
-      Location = new System.Drawing.Point(60 * ExcaliburComponents.SizeProportions.ScaleFactor, 1 * ExcaliburComponents.SizeProportions.ScaleFactor),
+      Location = new System.Drawing.Point(61 * ExcaliburComponents.SizeProportions.ScaleFactor, 1 * ExcaliburComponents.SizeProportions.ScaleFactor),
     };
 
-    public readonly ExcaliburComponents.HighWritableTextBox HighWritableTextBoxForValues = new ExcaliburComponents.HighWritableTextBox {
+    public readonly ExcaliburComponents.HighWritableTextBoxColumn HighWritableTextBoxForValuesColumn1 = new ExcaliburComponents.HighWritableTextBoxColumn {
       Location = new System.Drawing.Point(48 * ExcaliburComponents.SizeProportions.ScaleFactor, 5 * ExcaliburComponents.SizeProportions.ScaleFactor),
+      Name = "HighWritableTextBoxForValuesColumn1"
+    };
+
+    public readonly ExcaliburComponents.HighWritableTextBoxColumn HighWritableTextBoxForValuesColumn2 = new ExcaliburComponents.HighWritableTextBoxColumn {
+      Location = new System.Drawing.Point(52 * ExcaliburComponents.SizeProportions.ScaleFactor, 5 * ExcaliburComponents.SizeProportions.ScaleFactor),
+      Name = "HighWritableTextBoxForValuesColumn2"
+    };
+
+    public readonly ExcaliburComponents.HighWritableTextBoxColumn HighWritableTextBoxForValuesColumn3 = new ExcaliburComponents.HighWritableTextBoxColumn {
+      Location = new System.Drawing.Point(56 * ExcaliburComponents.SizeProportions.ScaleFactor, 5 * ExcaliburComponents.SizeProportions.ScaleFactor),
+      Name = "HighWritableTextBoxForValuesColumn3"
+    };
+
+    public readonly ExcaliburComponents.HighWritableTextBoxColumn HighWritableTextBoxForValuesColumn4 = new ExcaliburComponents.HighWritableTextBoxColumn {
+      Location = new System.Drawing.Point(60 * ExcaliburComponents.SizeProportions.ScaleFactor, 5 * ExcaliburComponents.SizeProportions.ScaleFactor),
+      Name = "HighWritableTextBoxForValuesColumn4"
     };
 
     public readonly ExcaliburComponents.LargeButton LargeButtonForSpread = new ExcaliburComponents.LargeButton {
       Location = new System.Drawing.Point(48 * ExcaliburComponents.SizeProportions.ScaleFactor, 13 * ExcaliburComponents.SizeProportions.ScaleFactor),
       Text = "Projetar numeração",
     };
+
+    private void HandleEnterKeyNavigation(object sender, System.Windows.Forms.KeyEventArgs e) {
+      if (e.KeyCode == System.Windows.Forms.Keys.Enter) {
+        System.Windows.Forms.TextBox currentTextBox = sender as System.Windows.Forms.TextBox;
+
+        if (currentTextBox != null) {
+          System.String[] currentTextBoxLines = currentTextBox.Text.Trim().Split(
+            new System.String[] { System.Environment.NewLine },
+            System.StringSplitOptions.None
+          );
+
+          if (currentTextBoxLines.Length >= 4) {
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+
+            switch (currentTextBox.Name) {
+              case "HighWritableTextBoxForValuesColumn1":
+                HighWritableTextBoxForValuesColumn2.Focus();
+                break;
+              case "HighWritableTextBoxForValuesColumn2":
+                HighWritableTextBoxForValuesColumn3.Focus();
+                break;
+              case "HighWritableTextBoxForValuesColumn3":
+                HighWritableTextBoxForValuesColumn4.Focus();
+                break;
+            }
+          }
+        }
+      }
+    }
   }
 
   public class ReadOnlyTextBox: System.Windows.Forms.TextBox {
@@ -176,10 +234,10 @@ namespace ExcaliburComponents {
     }
   }
 
-  public class HighWritableTextBox: System.Windows.Forms.TextBox {
-    public HighWritableTextBox() {
-      MinimumSize = new System.Drawing.Size(15 * ExcaliburComponents.SizeProportions.ScaleFactor, 7 * ExcaliburComponents.SizeProportions.ScaleFactor);
-      MaximumSize = new System.Drawing.Size(15 * ExcaliburComponents.SizeProportions.ScaleFactor, 7 * ExcaliburComponents.SizeProportions.ScaleFactor);
+  public class HighWritableTextBoxColumn: System.Windows.Forms.TextBox {
+    public HighWritableTextBoxColumn() {
+      MinimumSize = new System.Drawing.Size(4 * ExcaliburComponents.SizeProportions.ScaleFactor, 7 * ExcaliburComponents.SizeProportions.ScaleFactor);
+      MaximumSize = new System.Drawing.Size(4 * ExcaliburComponents.SizeProportions.ScaleFactor, 7 * ExcaliburComponents.SizeProportions.ScaleFactor);
 
       Multiline = true;
     }
@@ -195,7 +253,7 @@ namespace ExcaliburComponents {
 
   public class MediumLabel: System.Windows.Forms.Label {
     public MediumLabel() {
-      Size = new System.Drawing.Size(11 * ExcaliburComponents.SizeProportions.ScaleFactor, 3 * ExcaliburComponents.SizeProportions.ScaleFactor);
+      Size = new System.Drawing.Size(12 * ExcaliburComponents.SizeProportions.ScaleFactor, 3 * ExcaliburComponents.SizeProportions.ScaleFactor);
       
       TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
     }
@@ -234,7 +292,7 @@ namespace ExcaliburComponents {
 
   public class LargeButton: System.Windows.Forms.Button {
     public LargeButton() {
-      Size = new System.Drawing.Size(15 * ExcaliburComponents.SizeProportions.ScaleFactor, 3 * ExcaliburComponents.SizeProportions.ScaleFactor);
+      Size = new System.Drawing.Size(16 * ExcaliburComponents.SizeProportions.ScaleFactor, 3 * ExcaliburComponents.SizeProportions.ScaleFactor);
     }
   }
 
