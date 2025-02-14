@@ -10,6 +10,16 @@ namespace ExcaliburAdministration {
     public ExternalPlugIn() {
       Instance = this;
     }  
+  
+    public static System.String AssemblyPath = System.IO.Path.Combine(
+      System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData),
+      "McNeel",
+      "Rhinoceros",
+      "7.0",
+      "Plug-ins",
+      "Excalibur (8f544372-c3fd-46ee-801b-f6b426b6c0a1)",
+      "1.0.0.0"
+    );
   }
 
   public class ExternalCommand: Rhino.Commands.Command {
@@ -65,6 +75,9 @@ namespace ExcaliburAdministration {
 
       MainWindow.SmallButtonForSuperdilate.Click += HandleSuperdilateEvent;
       MainWindow.SmallButtonForSubdilate.Click += HandleSubdilateEvent;
+
+      MainWindow.FlagButtonForBrazil.Click += HandleFillValuesEventForBrazil;
+      MainWindow.FlagButtonForUnitedStates.Click += HandleFillValuesEventForUnitedStates;
 
       MainWindow.LargeButtonForSpread.Click += HandleSpreadEvent;
 
@@ -225,6 +238,18 @@ namespace ExcaliburAdministration {
         SelectionState.LastSuperdilatedObjects = newPrimaryObjects;
         OperationsState.RegisterCreativeChange(newPrimaryObjectGuids);
       }
+    }
+
+    private void HandleFillValuesEventForBrazil(System.Object sender, System.EventArgs eventArgs) {
+      MainWindow.MediumWritableTextBoxForX.Text = "6,66";
+      MainWindow.MediumWritableTextBoxForY.Text = "1,66";
+      MainWindow.MediumWritableTextBoxForZ.Text = "0,7";
+    }
+
+    private void HandleFillValuesEventForUnitedStates(System.Object sender, System.EventArgs eventArgs) {
+      MainWindow.MediumWritableTextBoxForX.Text = "8,46";
+      MainWindow.MediumWritableTextBoxForY.Text = "2,1";
+      MainWindow.MediumWritableTextBoxForZ.Text = "0,7";
     }
 
     private void HandleSpreadEvent(System.Object sender, System.EventArgs eventArgs) {

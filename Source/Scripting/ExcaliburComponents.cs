@@ -1,7 +1,3 @@
-using System;
-using System.Linq;
-using System.Windows.Forms;
-
 namespace ExcaliburComponents {
   public class MainWindow: System.Windows.Forms.Form {
     public MainWindow() {
@@ -44,6 +40,9 @@ namespace ExcaliburComponents {
 
       Controls.Add(SmallButtonForSubdilate);
       Controls.Add(SmallButtonForSuperdilate);
+
+      Controls.Add(FlagButtonForBrazil);
+      Controls.Add(FlagButtonForUnitedStates);
 
       Controls.Add(MediumLabelForReference);
       Controls.Add(SmallWritableTextBoxForReference);
@@ -141,37 +140,57 @@ namespace ExcaliburComponents {
       Text = "+",
     };
 
-    public readonly ExcaliburComponents.MediumLabel MediumLabelForReference = new ExcaliburComponents.MediumLabel {
+    public readonly ExcaliburComponents.FlagButton FlagButtonForBrazil = new ExcaliburComponents.FlagButton {
       Location = new System.Drawing.Point(48 * ExcaliburComponents.SizeProportions.ScaleFactor, 1 * ExcaliburComponents.SizeProportions.ScaleFactor),
+      BackgroundImage = System.Drawing.Image.FromFile(
+        System.IO.Path.Combine(
+          ExcaliburAdministration.ExternalPlugIn.AssemblyPath,
+          "br-flag.png"
+        )
+      )
+    };
+
+    public readonly ExcaliburComponents.FlagButton FlagButtonForUnitedStates = new ExcaliburComponents.FlagButton {
+      Location = new System.Drawing.Point(48 * ExcaliburComponents.SizeProportions.ScaleFactor, 4 * ExcaliburComponents.SizeProportions.ScaleFactor),
+      BackgroundImage = System.Drawing.Image.FromFile(
+        System.IO.Path.Combine(
+          ExcaliburAdministration.ExternalPlugIn.AssemblyPath,
+          "us-flag.png"
+        )
+      )
+    };
+
+    public readonly ExcaliburComponents.MediumLabel MediumLabelForReference = new ExcaliburComponents.MediumLabel {
+      Location = new System.Drawing.Point(52 * ExcaliburComponents.SizeProportions.ScaleFactor, 1 * ExcaliburComponents.SizeProportions.ScaleFactor),
       Text = "Nº de referência"
     };
 
     public readonly ExcaliburComponents.SmallWritableTextBox SmallWritableTextBoxForReference = new ExcaliburComponents.SmallWritableTextBox {
-      Location = new System.Drawing.Point(61 * ExcaliburComponents.SizeProportions.ScaleFactor, 1 * ExcaliburComponents.SizeProportions.ScaleFactor),
+      Location = new System.Drawing.Point(65 * ExcaliburComponents.SizeProportions.ScaleFactor, 1 * ExcaliburComponents.SizeProportions.ScaleFactor),
     };
 
     public readonly ExcaliburComponents.HighWritableTextBoxColumn HighWritableTextBoxForValuesColumn1 = new ExcaliburComponents.HighWritableTextBoxColumn {
-      Location = new System.Drawing.Point(48 * ExcaliburComponents.SizeProportions.ScaleFactor, 5 * ExcaliburComponents.SizeProportions.ScaleFactor),
+      Location = new System.Drawing.Point(52 * ExcaliburComponents.SizeProportions.ScaleFactor, 5 * ExcaliburComponents.SizeProportions.ScaleFactor),
       Name = "HighWritableTextBoxForValuesColumn1"
     };
 
     public readonly ExcaliburComponents.HighWritableTextBoxColumn HighWritableTextBoxForValuesColumn2 = new ExcaliburComponents.HighWritableTextBoxColumn {
-      Location = new System.Drawing.Point(52 * ExcaliburComponents.SizeProportions.ScaleFactor, 5 * ExcaliburComponents.SizeProportions.ScaleFactor),
+      Location = new System.Drawing.Point(56 * ExcaliburComponents.SizeProportions.ScaleFactor, 5 * ExcaliburComponents.SizeProportions.ScaleFactor),
       Name = "HighWritableTextBoxForValuesColumn2"
     };
 
     public readonly ExcaliburComponents.HighWritableTextBoxColumn HighWritableTextBoxForValuesColumn3 = new ExcaliburComponents.HighWritableTextBoxColumn {
-      Location = new System.Drawing.Point(56 * ExcaliburComponents.SizeProportions.ScaleFactor, 5 * ExcaliburComponents.SizeProportions.ScaleFactor),
+      Location = new System.Drawing.Point(60 * ExcaliburComponents.SizeProportions.ScaleFactor, 5 * ExcaliburComponents.SizeProportions.ScaleFactor),
       Name = "HighWritableTextBoxForValuesColumn3"
     };
 
     public readonly ExcaliburComponents.HighWritableTextBoxColumn HighWritableTextBoxForValuesColumn4 = new ExcaliburComponents.HighWritableTextBoxColumn {
-      Location = new System.Drawing.Point(60 * ExcaliburComponents.SizeProportions.ScaleFactor, 5 * ExcaliburComponents.SizeProportions.ScaleFactor),
+      Location = new System.Drawing.Point(64 * ExcaliburComponents.SizeProportions.ScaleFactor, 5 * ExcaliburComponents.SizeProportions.ScaleFactor),
       Name = "HighWritableTextBoxForValuesColumn4"
     };
 
     public readonly ExcaliburComponents.LargeButton LargeButtonForSpread = new ExcaliburComponents.LargeButton {
-      Location = new System.Drawing.Point(48 * ExcaliburComponents.SizeProportions.ScaleFactor, 13 * ExcaliburComponents.SizeProportions.ScaleFactor),
+      Location = new System.Drawing.Point(52 * ExcaliburComponents.SizeProportions.ScaleFactor, 13 * ExcaliburComponents.SizeProportions.ScaleFactor),
       Text = "Projetar numeração",
     };
 
@@ -293,6 +312,13 @@ namespace ExcaliburComponents {
   public class LargeButton: System.Windows.Forms.Button {
     public LargeButton() {
       Size = new System.Drawing.Size(16 * ExcaliburComponents.SizeProportions.ScaleFactor, 3 * ExcaliburComponents.SizeProportions.ScaleFactor);
+    }
+  }
+
+  public class FlagButton: System.Windows.Forms.Button {
+    public FlagButton() {
+      Size = new System.Drawing.Size(3 * ExcaliburComponents.SizeProportions.ScaleFactor, 2 * ExcaliburComponents.SizeProportions.ScaleFactor);
+      BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
     }
   }
 

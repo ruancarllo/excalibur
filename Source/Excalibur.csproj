@@ -24,6 +24,11 @@
       <PublishFiles Include="$(PublishDir)\*.rhp"/>
     </ItemGroup>
     <Copy SourceFiles="@(PublishFiles)" DestinationFolder="$(UserProfile)\AppData\Roaming\McNeel\Rhinoceros\7.0\Plug-ins\Excalibur (8f544372-c3fd-46ee-801b-f6b426b6c0a1)\1.0.0.0"/>
+  
+    <ItemGroup>
+      <AssetFiles Include="Assets\**\*.*"/>
+    </ItemGroup>
+    <Copy SourceFiles="@(AssetFiles)" DestinationFolder="$(UserProfile)\AppData\Roaming\McNeel\Rhinoceros\7.0\Plug-ins\Excalibur (8f544372-c3fd-46ee-801b-f6b426b6c0a1)\1.0.0.0"/>
   </Target>
 
 </Project>
